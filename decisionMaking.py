@@ -262,3 +262,90 @@ def model_check(knowledge, query):
     # Check that knowledge entails query
     return check_all(knowledge, query, symbols, dict())
 
+
+
+Rain = Symbol("Rain")
+HeavyTraffic = Symbol("HeavyTraffic")
+EarlyMeeting = Symbol("EarlyMeeting")
+Strike = Symbol("Strike")
+Appointment = Symbol("Appointment")
+RoadConstruction = Symbol("RoadConstruction")
+
+WFH = Symbol("WFH")  # Work From Home
+Drive = Symbol("Drive")
+PublicTransport = Symbol("PublicTransport")
+
+
+knowledge = And(
+    # If it's raining or there's an early meeting, you should work from home
+    Implication(Or(Rain, EarlyMeeting), WFH),
+
+    # If it's not raining and there's no heavy traffic, you should drive
+    Implication(And(Not(Rain), Not(HeavyTraffic)), Drive),
+
+    # If there's no strike and it's not raining, you should take public transport
+    Implication(And(Not(Strike), Not(Rain)), PublicTransport),
+
+    # Additional rule: If there's an appointment in the afternoon, you should drive
+    Implication(Appointment, Drive),
+
+    # Additional rule: If there's road construction, driving may not be the best choice
+    Implication(RoadConstruction, Not(Drive))
+)
+
+
+query_WFH = WFH
+query_Drive = Drive
+query_PublicTransport = PublicTransport
+
+
+scenario_1 = {
+    "Rain": True,
+    "HeavyTraffic": True,
+    "EarlyMeeting": False,
+    "Strike": False,
+    "Appointment": False,
+    "RoadConstruction": False
+}
+
+print("Scenario 1 - Raining and Heavy Traffic:")
+print("Should work from home?", model_check(knowledge, query_WFH))
+print("Should drive?", model_check(knowledge, query_Drive))
+print("Should take public transport?", model_check(knowledge, query_PublicTransport))
+
+
+scenario_2 = {
+    "Rain": False,
+    "HeavyTraffic": False,
+    "EarlyMeeting": False,
+    "Strike": True,
+    "Appointment": False,
+    "RoadConstruction": False
+}
+
+print("Scenario 2 - Public Transport Strike, No Rain:")
+print("Should work from home?", model_check(knowledge, query_WFH))
+print("Should drive?", model_check(knowledge, query_Drive))
+print("Should take public transport?", model_check(knowledge, query_PublicTransport))
+
+
+scenario_3 = {
+    "Rain": False,
+    "HeavyTraffic": False,
+    "EarlyMeeting": False,
+    "Strike": False,
+    "Appointment": False,
+    "RoadConstruction": False
+}
+
+print("Scenario 3 - Clear Weather, Light Traffic, No Strike:")
+print("Should work from home?", model_check(knowledge, query_WFH))
+print("Should drive?", model_check(knowledge, query_Drive))
+print("Should take public transport?", model_check(knowledge, query_PublicTransport))
+
+# Rule: If there's road construction, avoid specific route
+RouteA = Symbol("RouteA")
+RouteB = Symbol("RouteB")
+
+# Avoid RouteA if there's construction
+knowledge.add(Implication(RoadConstruction, Not(RouteA)))
