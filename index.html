@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Commute Decision AI</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f4f4f4;
+text-align:center;
+}
+
+.container{
+background:white;
+width:400px;
+margin:auto;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+margin-top:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Smart Commute Decision</h2>
+
+<form action="run.php" method="POST">
+
+<label><input type="checkbox" name="Rain"> Rain</label><br>
+<label><input type="checkbox" name="HeavyTraffic"> Heavy Traffic</label><br>
+<label><input type="checkbox" name="EarlyMeeting"> Early Meeting</label><br>
+<label><input type="checkbox" name="Strike"> Public Transport Strike</label><br>
+<label><input type="checkbox" name="Appointment"> Appointment</label><br>
+<label><input type="checkbox" name="RoadConstruction"> Road Construction</label><br>
+
+<button type="submit">Get Recommendation</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

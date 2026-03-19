@@ -1,5 +1,9 @@
 import itertools
+import sys
+import json
 
+class EvaluationException(Exception):
+    pass
 
 class Sentence():
 
@@ -298,54 +302,86 @@ query_WFH = WFH
 query_Drive = Drive
 query_PublicTransport = PublicTransport
 
+# scenario1_knowledge = And(
+#     knowledge,
+#     Rain,
+#     HeavyTraffic,
+#     Not(EarlyMeeting),
+#     Not(Strike),
+#     Not(Appointment),
+#     Not(RoadConstruction)
+# )
 
-scenario_1 = {
-    "Rain": True,
-    "HeavyTraffic": True,
-    "EarlyMeeting": False,
-    "Strike": False,
-    "Appointment": False,
-    "RoadConstruction": False
-}
-
-print("Scenario 1 - Raining and Heavy Traffic:")
-print("Should work from home?", model_check(knowledge, query_WFH))
-print("Should drive?", model_check(knowledge, query_Drive))
-print("Should take public transport?", model_check(knowledge, query_PublicTransport))
-
-
-scenario_2 = {
-    "Rain": False,
-    "HeavyTraffic": False,
-    "EarlyMeeting": False,
-    "Strike": True,
-    "Appointment": False,
-    "RoadConstruction": False
-}
-
-print("Scenario 2 - Public Transport Strike, No Rain:")
-print("Should work from home?", model_check(knowledge, query_WFH))
-print("Should drive?", model_check(knowledge, query_Drive))
-print("Should take public transport?", model_check(knowledge, query_PublicTransport))
+# # print("Scenario 1 - Raining and Heavy Traffic:")
+# # print("Should work from home?", model_check(scenario1_knowledge, query_WFH))
+# # print("Should drive?", model_check(scenario1_knowledge, query_Drive))
+# # print("Should take public transport?", model_check(scenario1_knowledge, query_PublicTransport))
 
 
-scenario_3 = {
-    "Rain": False,
-    "HeavyTraffic": False,
-    "EarlyMeeting": False,
-    "Strike": False,
-    "Appointment": False,
-    "RoadConstruction": False
-}
+# scenario2_knowledge = And(
+#     knowledge,
+#     Not(Rain),
+#     Not(HeavyTraffic),
+#     Not(EarlyMeeting),
+#     Strike,
+#     Not(Appointment),
+#     Not(RoadConstruction)
+# )
 
-print("Scenario 3 - Clear Weather, Light Traffic, No Strike:")
-print("Should work from home?", model_check(knowledge, query_WFH))
-print("Should drive?", model_check(knowledge, query_Drive))
-print("Should take public transport?", model_check(knowledge, query_PublicTransport))
+# # print("Scenario 2 - Public Transport Strike, No Rain:")
+# # print("Should work from home?", model_check(scenario2_knowledge, query_WFH))
+# # print("Should drive?", model_check(scenario2_knowledge, query_Drive))
+# # print("Should take public transport?", model_check(scenario2_knowledge, query_PublicTransport))
 
-# Rule: If there's road construction, avoid specific route
-RouteA = Symbol("RouteA")
-RouteB = Symbol("RouteB")
+# scenario3_knowledge = And(
+#     knowledge,
+#     Not(Rain),
+#     Not(HeavyTraffic),
+#     Not(EarlyMeeting),
+#     Not(Strike),
+#     Not(Appointment),
+#     Not(RoadConstruction)
+# )
 
-# Avoid RouteA if there's construction
-knowledge.add(Implication(RoadConstruction, Not(RouteA)))
+# # print("Scenario 3 - Clear Weather, Light Traffic, No Strike:")
+# # print("Should work from home?", model_check(scenario3_knowledge, query_WFH))
+# # print("Should drive?", model_check(scenario3_knowledge, query_Drive))
+# # print("Should take public transport?", model_check(scenario3_knowledge, query_PublicTransport))
+
+# # Rule: If there's road construction, avoid specific route
+# RouteA = Symbol("RouteA")
+# RouteB = Symbol("RouteB")
+
+# # Avoid RouteA if there's construction
+# knowledge.add(Implication(RoadConstruction, Not(RouteA)))
+if __name__ == "__main__":
+
+    # If no argument is provided (manual run)
+    if len(sys.argv) == 1:
+        print("Python script ready. Waiting for input from PHP.")
+        sys.exit()
+
+    # If called from PHP with JSON
+    import base64
+
+    decoded = base64.b64decode(sys.argv[1]).decode("utf-8")
+    data = json.loads(decoded)
+
+    facts = []
+
+    facts.append(Rain if data["Rain"] else Not(Rain))
+    facts.append(HeavyTraffic if data["HeavyTraffic"] else Not(HeavyTraffic))
+    facts.append(EarlyMeeting if data["EarlyMeeting"] else Not(EarlyMeeting))
+    facts.append(Strike if data["Strike"] else Not(Strike))
+    facts.append(Appointment if data["Appointment"] else Not(Appointment))
+    facts.append(RoadConstruction if data["RoadConstruction"] else Not(RoadConstruction))
+
+    scenario = And(knowledge, *facts)
+
+    result = {
+        "WFH": model_check(scenario, query_WFH),
+        "Drive": model_check(scenario, query_Drive),
+        "PublicTransport": model_check(scenario, query_PublicTransport)
+    }
+
+    print(json.dumps(result))
