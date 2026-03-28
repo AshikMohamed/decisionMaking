@@ -302,58 +302,6 @@ query_WFH = WFH
 query_Drive = Drive
 query_PublicTransport = PublicTransport
 
-# scenario1_knowledge = And(
-#     knowledge,
-#     Rain,
-#     HeavyTraffic,
-#     Not(EarlyMeeting),
-#     Not(Strike),
-#     Not(Appointment),
-#     Not(RoadConstruction)
-# )
-
-# # print("Scenario 1 - Raining and Heavy Traffic:")
-# # print("Should work from home?", model_check(scenario1_knowledge, query_WFH))
-# # print("Should drive?", model_check(scenario1_knowledge, query_Drive))
-# # print("Should take public transport?", model_check(scenario1_knowledge, query_PublicTransport))
-
-
-# scenario2_knowledge = And(
-#     knowledge,
-#     Not(Rain),
-#     Not(HeavyTraffic),
-#     Not(EarlyMeeting),
-#     Strike,
-#     Not(Appointment),
-#     Not(RoadConstruction)
-# )
-
-# # print("Scenario 2 - Public Transport Strike, No Rain:")
-# # print("Should work from home?", model_check(scenario2_knowledge, query_WFH))
-# # print("Should drive?", model_check(scenario2_knowledge, query_Drive))
-# # print("Should take public transport?", model_check(scenario2_knowledge, query_PublicTransport))
-
-# scenario3_knowledge = And(
-#     knowledge,
-#     Not(Rain),
-#     Not(HeavyTraffic),
-#     Not(EarlyMeeting),
-#     Not(Strike),
-#     Not(Appointment),
-#     Not(RoadConstruction)
-# )
-
-# # print("Scenario 3 - Clear Weather, Light Traffic, No Strike:")
-# # print("Should work from home?", model_check(scenario3_knowledge, query_WFH))
-# # print("Should drive?", model_check(scenario3_knowledge, query_Drive))
-# # print("Should take public transport?", model_check(scenario3_knowledge, query_PublicTransport))
-
-# # Rule: If there's road construction, avoid specific route
-# RouteA = Symbol("RouteA")
-# RouteB = Symbol("RouteB")
-
-# # Avoid RouteA if there's construction
-# knowledge.add(Implication(RoadConstruction, Not(RouteA)))
 if __name__ == "__main__":
 
     # If no argument is provided (manual run)
